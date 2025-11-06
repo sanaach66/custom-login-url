@@ -1,0 +1,206 @@
+/**
+ * Custom Login URL - Admin Styles
+ * 
+ * @package Custom_Login_URL
+ * @version 1.0.0
+ */
+
+.clu-settings-wrap {
+    max-width: 900px;
+}
+
+.clu-settings-wrap h1 {
+    margin-bottom: 20px;
+}
+
+.clu-notice-box {
+    background: #fff3cd;
+    border-left: 4px solid #ffc107;
+    padding: 20px;
+    margin: 20px 0;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.clu-notice-box h2 {
+    margin-top: 0;
+    color: #856404;
+    font-size: 18px;
+}
+
+.clu-notice-box p {
+    margin: 10px 0;
+    color: #856404;
+}
+
+.clu-current-url {
+    background: #fff;
+    padding: 15px;
+    border-radius: 4px;
+    margin-top: 15px;
+}
+
+.clu-login-link {
+    font-size: 16px;
+    color: #0073aa;
+    text-decoration: none;
+    word-break: break-all;
+    font-weight: 600;
+}
+
+.clu-login-link:hover {
+    color: #005177;
+    text-decoration: underline;
+}
+
+.clu-settings-form {
+    background: #fff;
+    padding: 20px;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+    margin: 20px 0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.clu-settings-form h2 {
+    margin-top: 0;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.clu-settings-form .form-table {
+    margin-top: 20px;
+}
+
+.clu-settings-form input[type="text"] {
+    font-size: 14px;
+    padding: 8px 12px;
+}
+
+.clu-settings-form .description {
+    margin-top: 8px;
+    font-style: normal;
+}
+
+.clu-login-url {
+    color: #0073aa;
+    font-size: 15px;
+    display: inline-block;
+    margin-top: 5px;
+    padding: 5px 10px;
+    background: #f0f6fc;
+    border-radius: 3px;
+}
+
+#clu-slug-preview {
+    color: #d63638;
+    font-weight: 700;
+}
+
+.clu-settings-form fieldset label {
+    display: block;
+    margin: 10px 0;
+    font-weight: 500;
+}
+
+.clu-settings-form fieldset input[type="radio"] {
+    margin-right: 8px;
+}
+
+.clu-info-box {
+    background: #e7f5fe;
+    border-left: 4px solid #0073aa;
+    padding: 20px;
+    margin: 20px 0;
+    border-radius: 4px;
+}
+
+.clu-info-box h2 {
+    margin-top: 0;
+    color: #005177;
+    font-size: 18px;
+}
+
+.clu-info-box p,
+.clu-info-box ol {
+    color: #005177;
+}
+
+.clu-info-box ol {
+    margin-left: 20px;
+}
+
+.clu-info-box li {
+    margin: 8px 0;
+    line-height: 1.6;
+}
+
+.clu-settings-form .submit {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #e5e5e5;
+}
+
+.clu-settings-form .button-primary {
+    padding: 8px 20px;
+    height: auto;
+    font-size: 14px;
+}
+
+.clu-settings-wrap .notice {
+    margin: 20px 0;
+}
+
+.clu-settings-wrap .notice p {
+    margin: 0.5em 0;
+}
+
+@media screen and (max-width: 782px) {
+    .clu-settings-wrap {
+        margin-right: 10px;
+    }
+    
+    .clu-notice-box,
+    .clu-info-box {
+        padding: 15px;
+    }
+    
+    .clu-login-link {
+        font-size: 14px;
+    }
+    
+    .clu-settings-form {
+        padding: 15px;
+    }
+}
+
+@keyframes highlight {
+    0% {
+        background-color: #f0f6fc;
+    }
+    50% {
+        background-color: #ffd700;
+    }
+    100% {
+        background-color: #f0f6fc;
+    }
+}
+
+.clu-login-url.highlight {
+    animation: highlight 0.6s ease-in-out;
+}
+
+input[name="clu_login_slug"]:invalid {
+    border-color: #d63638;
+}
+
+input[name="clu_login_slug"]:valid {
+    border-color: #00a32a;
+}
+
+.clu-settings-form input[type="text"]:focus,
+.clu-settings-form input[type="radio"]:focus {
+    outline: 2px solid #2271b1;
+    outline-offset: 0;
+    box-shadow: 0 0 0 1px #2271b1;
+}

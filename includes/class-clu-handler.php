@@ -28,7 +28,7 @@ class CLU_Handler {
     
     private function __construct() {
         $this->login_slug = get_option('clu_login_slug', 'login');
-        $this->redirect_to_home = (bool) get_option('clu_redirect_to_home', true);
+        $this->redirect_to_home = false; // Always use 404 instead of redirecting to home
         $this->init_hooks();
     }
     
@@ -75,46 +75,96 @@ class CLU_Handler {
     }
     
     public function block_default_login() {
-        global $pagenow;
+        global $pagenow, $wp;
         
-        if (is_admin() || (defined('DOING_AJAX') && DOING_AJAX)) {
+        // Skip if it's an AJAX request or a whitelisted action
+        if ((defined('DOING_AJAX') && DOING_AJAX) || $this->is_whitelisted_action()) {
             return;
         }
         
+        // Allow logout action when user is logged in
         if (is_user_logged_in() && $pagenow === 'wp-login.php' && isset($_GET['action']) && $_GET['action'] === 'logout') {
             return;
         }
         
-        if ($pagenow === 'wp-login.php' && !$this->is_whitelisted_action()) {
+        // Get the current URL path
+        $request_uri = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
+        $is_wp_admin = strpos($request_uri, '/wp-admin/') !== false;
+        $is_wp_login = strpos($request_uri, 'wp-login.php') !== false;
+        
+        // Block direct access to wp-login.php
+        if ($is_wp_login && !$this->is_whitelisted_action()) {
+            $this->handle_blocked_access();
+        }
+        
+        // Block access to wp-admin for non-logged-in users
+        if ($is_wp_admin && !is_user_logged_in() && !$this->is_rest_request()) {
+            // Check if it's an admin-ajax.php request (needed for some plugins)
+            if (strpos($request_uri, 'admin-ajax.php') === false) {
+                $this->handle_blocked_access();
+            }
+            return;
+        }
+        
+        // Block access to wp-login.php through any other URL
+        if (isset($request_uri) && strpos($request_uri, '/' . $this->login_slug) === false && 
+            $pagenow === 'wp-login.php' && !$this->is_whitelisted_action()) {
             $this->handle_blocked_access();
         }
     }
     
     private function is_whitelisted_action() {
-        $whitelisted = array('postpass');
-        if (isset($_GET['action']) && in_array($_GET['action'], $whitelisted)) {
+        $whitelisted = array('postpass', 'logout', 'lostpassword', 'retrievepassword', 'resetpass', 'rp', 'register');
+        
+        // Check for whitelisted actions
+        if (isset($_GET['action']) && in_array($_GET['action'], $whitelisted, true)) {
             return true;
         }
+        
+        // Allow admin-ajax.php requests
+        if (defined('DOING_AJAX') && DOING_AJAX) {
+            return true;
+        }
+        
+        // Allow REST API requests
+        if (defined('REST_REQUEST') && REST_REQUEST) {
+            return true;
+        }
+        
         return false;
     }
     
-    private function handle_blocked_access() {
-        if ($this->redirect_to_home) {
-            wp_safe_redirect(home_url());
-            exit;
-        } else {
-            global $wp_query;
-            $wp_query->set_404();
-            status_header(404);
-            nocache_headers();
-            
-            if (file_exists(get_template_directory() . '/404.php')) {
-                include get_template_directory() . '/404.php';
-            } else {
-                wp_die(__('Page not found', 'custom-login-url'), '404 - Not Found', array('response' => 404));
-            }
-            exit;
+    /**
+     * Check if the current request is a REST API request
+     */
+    private function is_rest_request() {
+        if (defined('REST_REQUEST') && REST_REQUEST) {
+            return true;
         }
+        
+        if (empty($_SERVER['REQUEST_URI'])) {
+            return false;
+        }
+        
+        $rest_prefix = trailingslashit(rest_get_url_prefix());
+        $is_rest = (strpos($_SERVER['REQUEST_URI'], $rest_prefix) !== false);
+        
+        return $is_rest;
+    }
+    
+    private function handle_blocked_access() {
+        // Always show 404 for blocked login attempts, regardless of redirect setting
+        global $wp_query;
+        $wp_query->set_404();
+        status_header(404);
+        nocache_headers();
+        
+        if (file_exists(get_template_directory() . '/404.php')) {
+            include get_template_directory() . '/404.php';
+        } else {
+            wp_die(__('Page not found', 'custom-login-url'), '404 - Not Found', array('response' => 404));
+        }
+        exit;
     }
     
     public function filter_site_url($url, $path, $scheme, $blog_id = null) {

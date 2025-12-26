@@ -13,6 +13,8 @@ if (!defined('ABSPATH')) {
 /**
  * Settings class
  */
+
+//echo "<h2>Test text</h2>";
 class CLU_Settings {
     
     private static $instance = null;

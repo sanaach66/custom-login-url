@@ -28,6 +28,8 @@ define('CLU_PLUGIN_BASENAME', plugin_basename(__FILE__));
 /**
  * Main plugin class
  */
+
+//echo "<h2>Test Text</h2>";
 class Custom_Login_URL {
     
     /**
